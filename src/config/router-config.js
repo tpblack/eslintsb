@@ -1,21 +1,54 @@
 // 路由配置文件只放路由信息
 import Home from '../views/Home.vue'
 // ctrl + p 快速搜索文件
-const routers = [
-  {
+const routers = [{
     path: '/',
-    name: 'home',
-    component: Home
+    component: Home,
+    children: [{
+        path: '',
+        name: 'home',
+        component: () => import("@/views/main/Main.vue")
+      },
+      // 增加一个新的页面并导入
+      {
+        path:'/social',
+        name: 'social',
+        component: ()=> import('@/views/main/Social.vue')
+      }
+    ]
   },
-  {
-    // 配置login页面
-    path:'/login',
+  { // 配置嵌套路由
+    path: '/login',
     // 给login路由取名  命名路由
-    name:'login',
+
     // 导入login页面需要展示的内容
     // 懒加载导入 可以省略.vue
-    component: ()=> import('@/views/user/Login.vue')
-  }
+    component: () => import('@/views/user/Index.vue'),
+    children: [{ // 配置登录
+        path: '',
+        name: 'login',
+        component: () => import('@/views/user/Login.vue')
+      },
+      {
+        path: '/reg',
+        component: () => import('@/views/user/Reg'),
+        name: 'reg'
+      },
+    ]
+  },
+  // {
+  //   // 配置login页面
+  //   path:'/login',
+  //   // 给login路由取名  命名路由
+  //   name:'login',
+  //   // 导入login页面需要展示的内容
+  //   // 懒加载导入 可以省略.vue
+  //   component: ()=> import('@/views/user/Login.vue')
+  // },{
+  //   path: '/reg',
+  //   component: () => import('@/views/user/Reg'),
+  //   name: 'reg'
+  // },
   // {
   //   path: '/about',
   //   name: 'about',
