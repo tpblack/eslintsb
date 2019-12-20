@@ -7,7 +7,10 @@
       <!-- 设置左右两端对齐 使用要设置两个div 一个放左边一个放右边 -->
       <div class="left">
         <!-- 使用@/ 指向src目录 -->
-        <img src="@/assets/logo.png" alt @click="goHome" />
+        <!-- 做一个图片链接  为了不受其他样式影响 直接使用tag 渲染成其他标签 -->
+        <router-link to="/" tag="span">
+          <img src="@/assets/logo.png" alt />
+        </router-link>
         <router-link to="/social">社会招聘</router-link>
         <a href="#">校园招聘</a>
         <a href="#">关于招聘</a>
@@ -78,10 +81,7 @@ export default {
         }
       });
     },
-    // 返回主页
-    goHome(){
-        this.$router.push('/')
-    }
+
   }
 };
 </script>
@@ -93,6 +93,7 @@ export default {
   left: 0;
   right: 0;
   top: 0;
+  z-index: 9999;
 }
 .nav,
 .footer {
@@ -131,8 +132,8 @@ export default {
       color: #44a8f2;
       cursor: pointer;
     }
-    span:hover{
-        color: #44a8f2;
+    span:hover {
+      color: #44a8f2;
     }
   }
 }
