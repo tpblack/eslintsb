@@ -77,7 +77,7 @@ export default {
           address: "深圳市",
           time: "2019-12-19",
           collection: "♥",
-          details: "查看详情>",
+          details: "查看详情>"
         },
         {
           date: "汽车电子硬件工程师（毫米波雷达）",
@@ -85,7 +85,7 @@ export default {
           address: "深圳市",
           time: "2019-12-19",
           collection: "♥",
-          details: "查看详情>",
+          details: "查看详情>"
         },
         {
           date: "汽车电子硬件工程师（毫米波雷达）",
@@ -93,7 +93,7 @@ export default {
           address: "深圳市",
           time: "2019-12-19",
           collection: "♥",
-          details: "查看详情>",
+          details: "查看详情>"
         },
         {
           date: "汽车电子硬件工程师（毫米波雷达）",
@@ -101,7 +101,7 @@ export default {
           address: "深圳市",
           time: "2019-12-19",
           collection: "♥",
-          details: "查看详情>",
+          details: "查看详情>"
         }
       ]
     };

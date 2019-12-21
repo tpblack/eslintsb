@@ -8,20 +8,25 @@
         <div class="classNav">
           <div class="nav">
             <div>职位类别:</div>
-            <div class="active">所有类别</div>
+            <div :class="{active:keywords.type===0}" @click="serachJobs(0)">所有类别</div>
             <!-- 使用列表渲染 渲染所有的类别 -->
-            <div v-for="item in typeList" :key="item.id">{{item.type}}</div>
+            <!-- 添加点击事件 -->
+            <div
+              :class="{active:keywords.type==item.id}"
+              v-for="item in typeList"
+              :key="item.id"
+              @click="serachJobs(item.id)"
+            >{{item.type}}</div>
           </div>
           <div class="nav">
             <div>工作城市:</div>
-            <div class="active">所有城市</div>
-            <div>北京市</div>
-            <div>杭州市</div>
-            <div>南京市</div>
-            <div>上海市</div>
-            <div>深圳市</div>
-            <div>西安市</div>
-            <div>香港</div>
+            <div :class="{active:keywords.city===0}" @click="serachCitys(0)">所有城市</div>
+            <div
+              :class="{active:keywords.city==item.id}"
+              @click="serachCitys(item.id)"
+              v-for="item in cityList"
+              :key="item.id"
+            >{{item.city}}</div>
           </div>
         </div>
         <!-- 这是搜索区域 -->
@@ -33,16 +38,17 @@
             size="medium"
             v-model="query"
             clearable
+            @change="serachList"
           ></el-input>
           <div class="keyword">
             <span>职院招聘</span>
-            <span>嵌入式</span>
-            <span>算法</span>
-            <span>机械</span>
-            <span>采购</span>
-            <span>运维</span>
-            <span>开发</span>
-            <span>实习生</span>
+            <span @click="serachList('嵌入式')">嵌入式</span>
+            <span @click="serachList('算法')">算法</span>
+            <span @click="serachList('机械')">机械</span>
+            <span @click="serachList('web')">web</span>
+            <span @click="serachList('运维')">运维</span>
+            <span @click="serachList('开发')">开发</span>
+            <span @click="serachList('java')">java</span>
           </div>
         </div>
         <!-- 这是结果区域 -->
@@ -55,9 +61,9 @@
             <el-table-column prop="job_name" label="职位名称" width="280"></el-table-column>
             <el-table-column prop="job_type" label="职位类别">
               <template slot-scope="scope">
-                  <!-- scope.row当前表格对象 -->
-                  <!-- 过滤器 过滤职位列表 -->
-                  {{jobTypeUpdata(scope.row.job_type)}}
+                <!-- scope.row当前表格对象 -->
+                <!-- 过滤器 过滤职位列表 -->
+                {{jobTypeUpdata(scope.row.job_type)}}
               </template>
             </el-table-column>
             <el-table-column prop="job_city" label="工作城市"></el-table-column>
@@ -69,12 +75,22 @@
               </template>
             </el-table-column>
             <el-table-column label="操作">
-              <template>
-                <span style="cursor:pointer; color:#b4b4b4 ">查看详情></span>
+              <template slot-scope="scope">
+                <span
+                  style="cursor:pointer; color:#b4b4b4 "
+                  @click="queryDetails(scope.row.pk)"
+                >查看详情></span>
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination background layout="prev, pager, next" :total="pagination.total" :current-page="pagination.page-0" @current-change="pageChange" class="mypage" />
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="pagination.total"
+            :current-page="pagination.page"
+            @current-change="pageChange"
+            class="mypage"
+          />
         </div>
       </div>
     </div>
@@ -150,12 +166,50 @@ export default {
     return {
       // 职位类别
       typeList: [],
+      // 城市类别
+      cityList: [
+        {
+          id: 1,
+          city: "上海市"
+        },
+        {
+          id: 2,
+          city: "北京市"
+        },
+        {
+          id: 3,
+          city: "杭州市"
+        },
+        {
+          id: 4,
+          city: "南京市"
+        },
+        {
+          id: 5,
+          city: "深圳市"
+        },
+        {
+          id: 6,
+          city: "西安市"
+        },
+        {
+          id: 7,
+          city: "香港"
+        }
+      ],
       // 搜索框的值
       query: "",
       // 职位列表
       jobs: [],
       // 分页器
-      pagination: {}
+      pagination: {},
+      //
+      keywords: {
+        // 职位类别
+        type: 0,
+        // 工作城市
+        city: 0
+      }
     };
   },
   // 页面渲染完毕调用接口
@@ -183,8 +237,26 @@ export default {
     },
     // 获取职位列表
     fetchJobs() {
+      // 默认传递页码
+      let params = {
+        page: this.pagination.page || 1
+      };
+      // 如果有赛选职位类别就传递
+      if (this.keywords.type) {
+        params.jobType = this.keywords.type;
+      }
+      // 如果有赛选城市就传递
+      if (this.keywords.city) {
+        var city = this.cityList.find(item => item.id === this.keywords.city)
+          .city;
+        params.jobCity = city;
+      }
+      // 如果文本框有值
+      if (this.query) {
+        params.jobName = this.query;
+      }
       // axios的get参数
-      this.$api.get("job/lists", { params: { page: this.pagination.page || 1  } }).then(res => {
+      this.$api.get("job/lists", { params }).then(res => {
         let {
           data: { items, total, page }
         } = res.data;
@@ -197,16 +269,39 @@ export default {
       });
     },
     // 页面改变的方法
-    pageChange(index){
+    pageChange(index) {
       // 页码改变 重新修改分页器
-      this.pagination.page =index;
+      this.pagination.page = index;
       // 重新查询
       this.fetchJobs();
     },
-    jobTypeUpdata(val){
+    jobTypeUpdata(val) {
       // 将typeList的类型与val进行匹配
-      var item = this.typeList.find(item=> item.id==val);
+      var item = this.typeList.find(item => item.id == val);
       return item.type;
+    },
+    serachJobs(id) {
+      // console.log(111);
+      this.keywords.type = id;
+      this.fetchJobs();
+    },
+    serachCitys(id) {
+      this.keywords.city = id;
+      this.fetchJobs();
+    },
+    // 输入框回车或者失焦事件
+    serachList(value) {
+      // 重新查询
+      this.query = value;
+      this.fetchJobs();
+    },
+    queryDetails(id) {
+      // console.log(id);
+      // this.$api.get("job/info", { params: { id } }).then(res => {
+      //   let data = res.data;
+      //   this.details = data.data;
+      // });
+      this.$router.push({ path: "/details", query:{id}});
     }
   }
 };

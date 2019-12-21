@@ -11,9 +11,14 @@ const routers = [{
       },
       // 增加一个新的页面并导入
       {
-        path:'/social',
+        path: '/social',
         name: 'social',
-        component: ()=> import('@/views/main/Social.vue')
+        component: () => import('@/views/main/Social.vue'),
+      },
+      {
+        path: '/details',
+        name: 'details',
+        component: () => import('@/views/main/Details.vue')
       }
     ]
   },
