@@ -56,6 +56,7 @@
           <!-- 自定义 -->
           <el-table
             :data="jobs"
+            v-loading="isLoading"
             :header-cell-style="{backgroundColor:'#f5f5f5',fontSize:'18px',color:'#616466'}"
           >
             <el-table-column prop="job_name" label="职位名称" width="280"></el-table-column>
@@ -70,8 +71,12 @@
             <el-table-column prop="job_time" label="发布时间"></el-table-column>
             <el-table-column label="收藏">
               <!-- scope 指向当前这一行的数据 -->
-              <template>
-                <span class="el-icon-star-off" style="cursor:pointer"></span>
+              <template slot-scope="scope">
+                <span
+                  :class="scope.row.isColl?'el-icon-star-on':'el-icon-star-off'"
+                  style="cursor:pointer"
+                  @click="showScope(scope)"
+                ></span>
               </template>
             </el-table-column>
             <el-table-column label="操作">
@@ -209,7 +214,9 @@ export default {
         type: 0,
         // 工作城市
         city: 0
-      }
+      },
+      // 表格加载状态
+      isLoading: false
     };
   },
   // 页面渲染完毕调用接口
@@ -255,8 +262,13 @@ export default {
       if (this.query) {
         params.jobName = this.query;
       }
+
+      // 在发送请求之前  将表格设为加载状态
+      this.isLoading = true;
       // axios的get参数
       this.$api.get("job/lists", { params }).then(res => {
+        // 在发送请求之前  将表格加载状态取消
+        this.isLoading = false;
         let {
           data: { items, total, page }
         } = res.data;
@@ -297,11 +309,21 @@ export default {
     },
     queryDetails(id) {
       // console.log(id);
-      // this.$api.get("job/info", { params: { id } }).then(res => {
-      //   let data = res.data;
-      //   this.details = data.data;
-      // });
-      this.$router.push({ path: "/details", query:{id}});
+
+      this.$router.push({ path: "/details", query: { id } });
+    },
+    showScope(scope) {
+      console.log(111);
+      // 收藏与取消收藏
+      this.$api.post("job/coll", { id: scope.row.pk }).then(res => {
+        if (res.data.code === 0) {
+          this.$message.info({ message: res.data.msg });
+          // 验证请求成功 对当前行进行操作
+          scope.row.isColl = !scope.row.isColl;
+        } else {
+          this.$message.error({ message: res.data.msg });
+        }
+      });
     }
   }
 };

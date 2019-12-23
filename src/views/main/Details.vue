@@ -8,7 +8,7 @@
         <div class="job-base">
           <div>
             职位类别：
-            {{details.job_type}}
+            {{jobTypeUpdata(details.job_type)}}
           </div>
           <div>
             工作城市：
@@ -28,7 +28,7 @@
           <p v-for="(item,index) in jobInfoArr" :key="index">{{item}}</p>
         </div>
         <div class="job-button">
-          <el-button class="btn1">收藏职位</el-button>
+          <el-button class="btn1" @click="showScope(details.pk)">{{collectionPosition}}</el-button>
           <el-button class="btn2" type="info">立即申请</el-button>
         </div>
       </div>
@@ -43,14 +43,24 @@ export default {
       infoId: "",
       details: {},
       jobInfoArr: [],
-      jobAskArr: []
+      jobAskArr: [],
+      typeList: [],
+      collectionPosition: "收藏职位"
     };
   },
   mounted() {
+    this.getTypeList();
     this.infoList();
-    this.jobType();
   },
   methods: {
+    getTypeList() {
+      // 获取类别列表
+      this.$api.get("job/typeList").then(res => {
+        let data = res.data;
+        this.typeList = data.data;
+        console.log(this.typeList);
+      });
+    },
     infoList() {
       //   获取浏览器地址  ?后的参数
       this.infoId = this.$route.query.id;
@@ -62,6 +72,36 @@ export default {
         this.jobAskArr = data.data.job_ask.split("\n");
         console.log(this.details);
       });
+    },
+
+    jobTypeUpdata(val) {
+      if (!val) return;
+
+      console.log(111);
+      // 将typeList的类型与val进行匹配
+      var item = this.typeList.find(item => item.id === val);
+      return item.type;
+    },
+    showScope(pk) {
+      // 收藏与取消收藏
+      this.$api.post("job/coll", { id: pk }).then(res => {
+        if (res.data.code === 0) {
+          this.$message.info({ message: res.data.msg });
+          // 验证请求成功 对当前行进行操作
+          this.details.isColl = !this.details.isColl;
+        } else {
+          this.$message.error({ message: res.data.msg });
+        }
+      });
+    }
+  },
+  watch: {
+    "details.isColl"(val){
+       if (val) {
+        this.collectionPosition = "取消收藏";
+      } else {
+        this.collectionPosition = "收藏职位";
+      }
     }
   }
 };

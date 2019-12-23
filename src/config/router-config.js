@@ -19,6 +19,11 @@ const routers = [{
         path: '/details',
         name: 'details',
         component: () => import('@/views/main/Details.vue')
+      },
+      {
+        path: '/user',
+        name: 'user',
+        component: () => import('@/views/user/User.vue')
       }
     ]
   },

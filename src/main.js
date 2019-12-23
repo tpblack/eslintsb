@@ -12,7 +12,7 @@ import elementUi from 'element-ui'
 // 导入axios
 import Axios from 'axios';
 // 配置axios的默认请求地址
-Axios.defaults.baseURL = 'http://172.16.8.20:3000/'
+Axios.defaults.baseURL = 'http://172.16.8.206:3000/'
 // 配置axios每次发送请求都携带sessionID值
 Axios.defaults.withCredentials = true
 // vue.use 方法代表设置vue的全局组件  以便每次使用对应的组件 以便不需要第二次引入

@@ -23,7 +23,9 @@
         <el-dropdown v-else>
           <span style="cursor:pointer">欢迎您,{{userName}}</span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>个人中心</el-dropdown-item>
+            <el-dropdown-item>
+              <router-link to="/user">个人中心</router-link>
+            </el-dropdown-item>
             <el-dropdown-item>个人空间</el-dropdown-item>
             <el-dropdown-item>退出登录</el-dropdown-item>
           </el-dropdown-menu>
@@ -80,8 +82,7 @@ export default {
           });
         }
       });
-    },
-
+    }
   }
 };
 </script>
@@ -93,7 +94,7 @@ export default {
   left: 0;
   right: 0;
   top: 0;
-  z-index: 9999;
+  z-index: 120;
 }
 .nav,
 .footer {
