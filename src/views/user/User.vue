@@ -30,18 +30,40 @@
           </div>
         </div>
         <div class="right">
-          <div>
-              <template>
-  <el-tabs v-model="activeName" @tab-click="handleClick">
-    <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
-    <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
-    <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
-    <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
-  </el-tabs>
-</template>
+          <div class="right_one">
+            <el-menu
+              :default-active="activeIndex"
+              class="el-menu-demo"
+              mode="horizontal"
+              @select="handleSelect"
+              text-color="#616466"
+              active-text-color="#3b3e40"
+            >
+              <el-menu-item index="1">社招简历</el-menu-item>
+              <el-menu-item index="2">校招简历</el-menu-item>
+            </el-menu>
+            <div class="right_top_text">
+              <div>
+                <el-button type="info" size="small" class="resumeBtn">创建简历</el-button>
+              </div>
+              <p>目前还没有简历，点击按钮创建简历吧！</p>
+            </div>
           </div>
-          <div></div>
-          <div></div>
+          <div class="right_two">
+            <div class="right_two_head">
+              <p>申请进度</p>
+              <a href="#">更多></a>
+            </div>
+            <div class="right_two_body">
+              <p>你还没有申请职位，快去投递吧~</p>
+            </div>
+          </div>
+          <div class="right_three">
+            <div class="right_three_head">
+              <p>职位收藏</p>
+            </div>
+            <div class="right_three_body"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -49,7 +71,18 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      activeIndex: "1"
+    };
+  },
+  methods: {
+    handleSelect(key, keyPath) {
+      console.log(key, keyPath);
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -155,6 +188,77 @@ export default {};
       background-color: #fff;
       width: 900px;
       height: 100px;
+      .right_one {
+        .right_top_text {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          background-color: #fff;
+          height: 155px;
+          & > div {
+            margin-bottom: 14px;
+            .resumeBtn {
+              background-color: #3b3e40;
+              border-color: #3b3e40;
+              box-sizing: border-box;
+            }
+            .resumeBtn:hover {
+              background-color: rgba($color: #3b3e40, $alpha: 0.9);
+              border-color: rgba($color: #3b3e40, $alpha: 0.8);
+            }
+          }
+          & > p {
+            font-size: 14px;
+            color: #909399;
+          }
+        }
+      }
+      .right_two {
+        margin-top: 15px;
+        background-color: #fff;
+        .right_two_head {
+          display: flex;
+          justify-content: space-between;
+          height: 55px;
+          line-height: 55px;
+          border-bottom: 1px solid #f0f1f2;
+          p {
+            margin-left: 25px;
+            color: #707473;
+            font-size: 16px;
+            font-weight: 400;
+          }
+          a {
+            color: #44a8f2;
+            font-size: 14px;
+            margin-right: 25px;
+          }
+        }
+        .right_two_body {
+          text-align: center;
+          p {
+            padding: 58px 0;
+            font-size: 14px;
+            color: #909399;
+          }
+        }
+      }
+      .right_three {
+        height: 55px;
+        line-height: 55px;
+        border-bottom: 1px solid #f0f1f2;
+        margin-top: 15px;
+        background-color: #fff;
+        .right_three_head {
+          p {
+            margin-left: 25px;
+            color: #707473;
+            font-size: 16px;
+            font-weight: 400;
+          }
+        }
+      }
     }
   }
 }

@@ -237,9 +237,8 @@ export default {
   methods: {
     getTypeList() {
       // 获取类别列表
-      this.$api.get("job/typeList").then(res => {
-        let data = res.data;
-        this.typeList = data.data;
+      this.$api.job.jobTypeList().then(res => {
+        this.typeList = res;
       });
     },
     // 获取职位列表
@@ -266,12 +265,10 @@ export default {
       // 在发送请求之前  将表格设为加载状态
       this.isLoading = true;
       // axios的get参数
-      this.$api.get("job/lists", { params }).then(res => {
+      this.$api.job.getJobList({ params }).then(res => {
         // 在发送请求之前  将表格加载状态取消
         this.isLoading = false;
-        let {
-          data: { items, total, page }
-        } = res.data;
+        let { items, total, page } = res;
         this.jobs = items;
         // 定制分页器
         this.pagination = {
@@ -295,34 +292,36 @@ export default {
     serachJobs(id) {
       // console.log(111);
       this.keywords.type = id;
+      // 每次进行查询page归1
+      // this.pagination.page = 1;
       this.fetchJobs();
     },
     serachCitys(id) {
       this.keywords.city = id;
+      // 每次进行查询page归1
+      // this.pagination.page = 1;
       this.fetchJobs();
     },
     // 输入框回车或者失焦事件
     serachList(value) {
       // 重新查询
       this.query = value;
+      // 每次进行查询page归1
+      // this.pagination.page = 1;
       this.fetchJobs();
     },
     queryDetails(id) {
       // console.log(id);
-
-      this.$router.push({ path: "/details", query: { id } });
+      // 如果需要使用params传值 path就不能使用了 必须使用name跳转路由
+      this.$router.push({ name: "details", params: { id: "details" + id } });
     },
     showScope(scope) {
       console.log(111);
       // 收藏与取消收藏
-      this.$api.post("job/coll", { id: scope.row.pk }).then(res => {
-        if (res.data.code === 0) {
-          this.$message.info({ message: res.data.msg });
+      this.$api.job.jobColl({ id: scope.row.pk }).then(res => {
+          this.$message.info({ message: "服务器请求成功" });
           // 验证请求成功 对当前行进行操作
           scope.row.isColl = !scope.row.isColl;
-        } else {
-          this.$message.error({ message: res.data.msg });
-        }
       });
     }
   }

@@ -53,34 +53,49 @@ export default {
       }
       // 向后台发送请求登录
       // axios
-      this.$api
-        .post("users/login", {
+      // this.$api
+      //   .post("users/login", {
+      //     userName: this.inputText,
+      //     password: this.inputPass
+      //   })
+      //   .then(res => {
+      //     // 取出请求返回的值
+      //     // 判断服务器返回的code码  只要为0 代表请求成功
+      //     console.log("服务器返回的值:", res);
+      //     this.$notify({
+      //       title: "登录成功",
+      //       message: "正在进入主页",
+      //       type: "success",
+      //       duration: 2000, // 显示时间
+      //       onClose: () => {
+      //         // 窗口关闭的回调函数
+      //         // 等两秒跳转
+      //         // 登录成功跳转首页
+      //         this.$router.push("/");
+      //       }
+      //     });
+      //   });
+      this.$api.users
+        .login({
           userName: this.inputText,
           password: this.inputPass
         })
         .then(res => {
           // 取出请求返回的值
-          let data = res.data;
           // 判断服务器返回的code码  只要为0 代表请求成功
-          if (data.code == 0) {
-            console.log("服务器返回的值:", data.data);
-            this.$notify({
-              title: "登录成功",
-              message: "正在进入主页",
-              type: "success",
-              duration: 2000, // 显示时间
-              onClose: () => {  // 窗口关闭的回调函数
-                // 等两秒跳转
-                // 登录成功跳转首页
-                this.$router.push("/");
-              }
-            });
-          } else {
-            this.$message.error({
-              message: data.msg,
-              duration: 1000
-            });
-          }
+          console.log("服务器返回的值:", res);
+          this.$notify({
+            title: "登录成功",
+            message: "正在进入主页",
+            type: "success",
+            duration: 2000, // 显示时间
+            onClose: () => {
+              // 窗口关闭的回调函数
+              // 等两秒跳转
+              // 登录成功跳转首页
+              this.$router.push("/");
+            }
+          });
         });
     },
     // 跳转注册页面

@@ -16,7 +16,8 @@ const routers = [{
         component: () => import('@/views/main/Social.vue'),
       },
       {
-        path: '/details',
+        // 动态路由
+        path: '/details/:id',
         name: 'details',
         component: () => import('@/views/main/Details.vue')
       },

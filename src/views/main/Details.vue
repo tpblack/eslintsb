@@ -49,27 +49,34 @@ export default {
     };
   },
   mounted() {
+
     this.getTypeList();
     this.infoList();
   },
   methods: {
     getTypeList() {
       // 获取类别列表
-      this.$api.get("job/typeList").then(res => {
-        let data = res.data;
-        this.typeList = data.data;
+      this.$api.job.jobTypeList().then(res => {
+        this.typeList = res;
         console.log(this.typeList);
       });
     },
-    infoList() {
+    // 异步转同步 async：修饰方法  await: 修饰请求
+    infoList: async function() {
       //   获取浏览器地址  ?后的参数
-      this.infoId = this.$route.query.id;
-      this.$api.get("job/info", { params: { id: this.infoId } }).then(res => {
-        let data = res.data;
-        this.details = data.data;
+      // this.infoId = this.$route.query.id;
+      // 如何去取动态路由的参数
+      var id = this.$route.params.id;
+      
+      this.infoId = id.slice(7);
+      this.$api.job.jobInfo({ params: { id: this.infoId } }).then(res => {
+        if(!Object.keys(res).length){
+          this.$router.push('/social');
+        }
+        this.details = res;
         // console.log(data.data.job_info.split('\n'))
-        this.jobInfoArr = data.data.job_info.split("\n");
-        this.jobAskArr = data.data.job_ask.split("\n");
+        this.jobInfoArr = res.job_info.split("\n");
+        this.jobAskArr = res.job_ask.split("\n");
         console.log(this.details);
       });
     },
@@ -84,14 +91,11 @@ export default {
     },
     showScope(pk) {
       // 收藏与取消收藏
-      this.$api.post("job/coll", { id: pk }).then(res => {
-        if (res.data.code === 0) {
-          this.$message.info({ message: res.data.msg });
+      this.$api.job.jobColl( { id: pk }).then(res => {
+          this.$message.info({ message: '更改成功' });
           // 验证请求成功 对当前行进行操作
           this.details.isColl = !this.details.isColl;
-        } else {
-          this.$message.error({ message: res.data.msg });
-        }
+
       });
     }
   },

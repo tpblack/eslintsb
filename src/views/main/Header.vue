@@ -68,19 +68,24 @@ export default {
     // 于是后端无法判断是否
     // 解决办法 : 每次发送ajax的时候  手动传递session值
     fetchUserInfo() {
-      this.$api.get("users/userInfo").then(res => {
-        let data = res.data;
-        // 判断状态码
-        if (data.code === 0) {
-          console.log("服务器返回的值:", data.data);
-          // 将用户信息保存到userInfo中
-          this.userInfo = data.data;
-        } else {
-          this.$message.error({
-            message: data.msg,
-            duration: 1000
-          });
-        }
+      // this.$api.get("users/userInfo").then(res => {
+      // let data = res.data;
+      // 判断状态码
+      // if (data.code === 0) {
+      // console.log("服务器返回的值:", res);
+      // 将用户信息保存到userInfo中
+      // this.userInfo = res;
+      // } else {
+      //   this.$message.error({
+      //     message: data.msg,
+      //     duration: 1000
+      //   });
+      // }
+      // });
+      this.$api.users.userInfo().then(res => {
+        console.log("服务器返回的值:", res);
+        // 将用户信息保存到userInfo中
+        this.userInfo = res;
       });
     }
   }
